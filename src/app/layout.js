@@ -1,7 +1,19 @@
-import { Inter } from "next/font/google";
+import { Inter, Noto_Sans, Righteous } from "next/font/google";
 import "./globals.css";
+import Header from "./components/general/Header";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const righteous = Righteous({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-righteous",
+});
+const notosans = Noto_Sans({
+  subsets: ["latin"],
+  weight: "500",
+  variable: "--font-notosans",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -10,8 +22,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html
+      lang="en"
+      className={`${righteous.variable} ${notosans.variable} scroll-smooth overflow-x-hidden scrollbar-hide `}
+    >
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
