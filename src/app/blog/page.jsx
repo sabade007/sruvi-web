@@ -4,6 +4,8 @@ import Header from "../components/general/Header";
 
 import Hero from "../components/general/Hero";
 import bloghero from "../assets/lottie/bloghero.json";
+import BlogImportance from "../components/blog/BlogImportance";
+import Blogtitle from "../components/blog/Blogtitle";
 
 const page = () => {
   return (
@@ -28,6 +30,8 @@ const page = () => {
       />
 
       <Headerbottom />
+      <BlogImportance />
+      <Blogtitle />
     </div>
   );
 };
