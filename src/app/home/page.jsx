@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import Headerbottom from "../components/general/Headerbottom";
-import { usePathname, useRouter } from "next/navigation";
+
 import Header from "../components/general/Header";
-import { LargeHeading } from "../components/general/Styles";
+
 import Hero from "../components/general/Hero";
-import landinganimation from "../assets/lottie/landinganimation.json";
+import landinganimation from "../assets/lottie/landingAnimation.json";
 
 const page = () => {
   return (
