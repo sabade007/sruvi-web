@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heading, Para, Subheading } from "./Styles";
 import logo from "../../assets/logo.png";
 import { motion } from "framer-motion";
@@ -26,25 +26,13 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { UserAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import { auth } from "../../../../firebase";
 
 const Header = () => {
-  const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 1024 });
-    return isDesktop ? children : null;
-  };
-  const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
-    return isTablet ? children : null;
-  };
-  const Mobile = ({ children }) => {
-    const isMobile = useMediaQuery({ maxWidth: 767 });
-    return isMobile ? children : null;
-  };
-  const Default = ({ children }) => {
-    const isNotMobile = useMediaQuery({ minWidth: 768 });
-    return isNotMobile ? children : null;
-  };
-
   const [open, setOpen] = useState(false);
   const DashboardSquare03Icon = (props) => (
     <svg
@@ -118,106 +106,211 @@ const Header = () => {
     </svg>
   );
 
+  //   SignIn Code
+
+  const router = useRouter();
+  const [logsuccess, setLogsuccess] = useState(false);
+  const [uuid, setuuid] = useState("");
+
+  const { user, googleSignIn, logOut } = UserAuth();
+  const handleGoogleSignIn = async () => {
+    try {
+      await googleSignIn();
+      setLogsuccess(true);
+    } catch (error) {
+      console.log(error);
+      setLogsuccess(false);
+    }
+  };
+
+  const [path, setPath] = useState("");
+
+  const handleSignOut = async () => {
+    try {
+      await logOut();
+      setLogsuccess(false);
+      if (path === "/dashboard/" + uuid) {
+        router.push("/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    auth.onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        const uid = currentUser.uid;
+        setuuid(uid);
+      } else {
+      }
+    });
+  }, [logsuccess]);
+
+  const handleDashboard = () => {
+    router.push("/dashboard/" + uuid);
+  };
+
   return (
     <div>
-      <div className="p-4">
-        <div className="p-4 shadow-lg rounded-lg rounded-b-none">
-          <div className="flex justify-between flex-row items-center">
-            <div className="flex flex-col">
-              <Image
-                src={logo}
-                className=" xxl:w-28 xl:w-24 lg:w-20 md:w-20 sm:w-20 xs:w-20"
-                alt="logo"
-              />
-              <div className="flex flex-row items-center">
-                <Subheading text={"because it's for "}></Subheading>
+      <div className="xs:hidden sm:hidden md:hidden lg:block xl:block xxl:block">
+        <div className=" pb-0">
+          <div className="p-4 shadow-lg rounded-lg rounded-b-none">
+            <div className="flex justify-between flex-row items-center">
+              <div className="flex flex-col">
                 <Image
-                  src={u}
-                  className="xxl:w-4 xl:w-4 lg:w-4 md:w-3 sm:w-3 xs:w-3 ml-2"
+                  src={logo}
+                  className=" xxl:w-28 xl:w-24 lg:w-20 md:w-20 sm:w-20 xs:w-20"
                   alt="logo"
                 />
+                <div className="flex flex-row items-center">
+                  <Heading text={"because it's for "}></Heading>
+                  <Image
+                    src={u}
+                    className="xxl:w-4 xl:w-4 lg:w-4 md:w-3 sm:w-3 xs:w-3 ml-2"
+                    alt="logo"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end justify-end">
+                {!user ? (
+                  <div
+                    className="flex flex-row items-center    cursor-pointer "
+                    onClick={handleGoogleSignIn}
+                  >
+                    <Subheading text={"Login/Signup"} black={true} />
+                    <Person4Rounded className="mr-2 ml-2 text-primary" />
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center    ">
+                    <div className="flex flex-row items-center cursor-pointer">
+                      <div className="mr-1">
+                        <Subheading text={"Hi!"} secondary={true} />
+                      </div>
+
+                      <Subheading text={user.displayName} secondary={true} />
+                    </div>
+
+                    <div
+                      className="mr-4 ml-4 flex flex-row cursor-pointer"
+                      onClick={handleDashboard}
+                    >
+                      <SpaceDashboardIcon fontSize="small" className=" mr-2" />
+                      <Subheading text={"My Dashboard"} black={true} />
+                    </div>
+
+                    <div
+                      className="cursor-pointer flex flex-row"
+                      onClick={handleSignOut}
+                    >
+                      <LogoutRoundedIcon fontSize="small" className=" mr-2" />
+                      <Subheading text={"Logout"} black={true} />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            <div>
-              <Desktop>
-                <div className="flex flex-row items-center cursor-pointer ">
-                  <Person4Rounded className="mr-2 text-secondary" />
-                  <Subheading text={"Login"} primary={true} />
+      <div className="xs:block sm:block md:block lg:hidden xl:hidden xxl:hidden">
+        <div className="p-4 pb-0">
+          <div className="p-4 shadow-lg rounded-lg rounded-b-none">
+            <div className="flex justify-between flex-row items-center">
+              <div className="flex flex-col">
+                <Image
+                  src={logo}
+                  className=" xxl:w-28 xl:w-24 lg:w-20 md:w-20 sm:w-20 xs:w-20"
+                  alt="logo"
+                />
+                <div className="flex flex-row items-center">
+                  <Heading text={"because it's for "}></Heading>
+                  <Image
+                    src={u}
+                    className="xxl:w-4 xl:w-4 lg:w-4 md:w-3 sm:w-3 xs:w-3 ml-2"
+                    alt="logo"
+                  />
                 </div>
-              </Desktop>
-              <Tablet>
-                <div className="flex flex-row items-center  cursor-pointer">
-                  <Person4Rounded className="mr-2 text-secondary" />
-                  <Subheading text={"Login"} primary={true} />
-                </div>
-              </Tablet>
-              <Mobile>
+              </div>
+
+              <div>
                 <div
                   className="flex flex-row items-center  "
                   onClick={() => setOpen(true)}
                 >
                   <Menu className="mr-2 text-secondary" fontSize="medium" />
                 </div>
-                {open && (
-                  <Drawer
-                    className=" w-[50vw] "
-                    anchor="right"
-                    open={open}
-                    onClose={() => setOpen(false)}
-                  >
-                    <div className="p-4 bg-gradient-to-r from-logoblack to-slate-950 h-full">
-                      <div className="flex flex-row justify-between items-center">
-                        <h1 className="text-orange  tracking-widest font-bungee ">
-                          Hello there!
-                        </h1>
-                        <div>
-                          <Close
-                            className="text-orange"
-                            fontSize="medium"
-                            onClick={() => setOpen(false)}
-                          />
-                        </div>
+              </div>
+              {open && (
+                <Drawer
+                  className=" w-[50vw] "
+                  anchor="right"
+                  open={open}
+                  onClose={() => setOpen(false)}
+                >
+                  <div className="p-4 bg-gradient-to-r from-logoblack to-slate-950 h-full">
+                    <div className="flex flex-row justify-between items-center">
+                      <h1 className="text-white  tracking-widest font-bungee ">
+                        Hello there!
+                      </h1>
+                      <div>
+                        <Close
+                          className="text-secondary cursor-pointer"
+                          fontSize="medium"
+                          onClick={() => setOpen(false)}
+                        />
                       </div>
+                    </div>
 
-                      <Divider className="mt-4" />
+                    <Divider className="mt-4" />
 
-                      <List className="mt-0 p-0">
-                        {[
-                          ...[
-                            {
-                              text: "Quick Access",
-                              route: "/",
-                              icon: DashboardSquare03Icon,
-                            },
-                            { text: "Home", route: "/home", icon: HomeRounded },
-                            {
-                              text: "Getting Started",
-                              route: "/gettingstarted",
-                              icon: Start,
-                            },
+                    <List className="mt-0 p-0">
+                      {[
+                        ...[
+                          {
+                            text: "Quick Access",
+                            route: "/",
+                            icon: DashboardSquare03Icon,
+                          },
+                          {
+                            text: "Home",
+                            route: "/home",
+                            icon: HomeRounded,
+                          },
+                          {
+                            text: "Getting Started",
+                            route: "/gettingstarted",
+                            icon: Start,
+                          },
 
-                            {
-                              text: "Services",
-                              route: "/services",
-                              icon: DesignServicesRounded,
-                            },
-                            {
-                              text: "About",
-                              route: "/about",
-                              icon: InfoRounded,
-                            },
-                            {
-                              text: "Blog",
-                              route: "/blog",
-                              icon: BloggerIcon,
-                            },
-                            {
-                              text: "Get in touch",
-                              route: "/contact",
-                              icon: ContactPage,
-                            },
-                          ].map(({ text, route, icon }) => (
+                          {
+                            text: "Services",
+                            route: "/services",
+                            icon: DesignServicesRounded,
+                          },
+                          {
+                            text: "About",
+                            route: "/about",
+                            icon: InfoRounded,
+                          },
+                          {
+                            text: "Blog",
+                            route: "/blog",
+                            icon: BloggerIcon,
+                          },
+                          {
+                            text: "Get in touch",
+                            route: "/contact",
+                            icon: ContactPage,
+                          },
+                        ].map(({ text, route, icon }) => (
+                          <ListItemButton
+                            style={{ margin: "0", padding: "0" }}
+                            href="{route}"
+                            key={text}
+                          >
                             <div className="w-full flex flex-row items-center">
                               <ListItemIcon
                                 sx={{ color: "white", fontSize: "small" }}
@@ -226,40 +319,40 @@ const Header = () => {
                               </ListItemIcon>
                               <Para text={text} white></Para>
                             </div>
+                          </ListItemButton>
 
-                            // <ListItem
-                            //   style={{ padding: "0" }}
-                            //   key={text}
-                            //   onClick={() => setOpen(false)}
-                            // >
-                            //   <ListItemButton href={route}>
-                            //     <div className="w-full flex flex-row items-center justify-center">
-                            //       <ListItemIcon sx={{ color: "white" }}>
-                            //         {React.createElement(icon)}
-                            //       </ListItemIcon>
-                            //       <ListItemText>
-                            //         <h1 className="text-white tracking-widest font-bungee">
-                            //           {text}
-                            //         </h1>
-                            //       </ListItemText>
-                            //     </div>
-                            //   </ListItemButton>
-                            // </ListItem>
-                          )),
-                        ].map((text) => (
-                          <ListItem
-                            className="w-[50vw] p-0 "
-                            key={text}
-                            onClick={() => setOpen(false)}
-                          >
-                            <ListItemText primary={text} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </div>
-                  </Drawer>
-                )}
-              </Mobile>
+                          // <ListItem
+                          //   style={{ padding: "0" }}
+                          //   key={text}
+                          //   onClick={() => setOpen(false)}
+                          // >
+                          //   <ListItemButton href={route}>
+                          //     <div className="w-full flex flex-row items-center justify-center">
+                          //       <ListItemIcon sx={{ color: "white" }}>
+                          //         {React.createElement(icon)}
+                          //       </ListItemIcon>
+                          //       <ListItemText>
+                          //         <h1 className="text-white tracking-widest font-bungee">
+                          //           {text}
+                          //         </h1>
+                          //       </ListItemText>
+                          //     </div>
+                          //   </ListItemButton>
+                          // </ListItem>
+                        )),
+                      ].map((text) => (
+                        <ListItem
+                          className="w-[50vw] p-0 "
+                          key={text}
+                          onClick={() => setOpen(false)}
+                        >
+                          <ListItemText primary={text} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </div>
+                </Drawer>
+              )}
             </div>
           </div>
         </div>
