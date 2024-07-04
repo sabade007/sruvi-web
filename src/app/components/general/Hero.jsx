@@ -2,7 +2,7 @@
 import React from "react";
 import Lottie from "lottie-react";
 import bloghero from "../../assets/lottie/bloghero.json";
-import { Heading, LargeHeading, Para } from "../general/Styles";
+import { But, Heading, LargeHeading, Para } from "../general/Styles";
 import Typewriter from "typewriter-effect";
 import { Container } from "@mui/material";
 
@@ -19,11 +19,15 @@ const Hero = ({
   typestringchar1,
   typestringchar2,
   typestringchar3,
+  getstarted,
 }) => {
   return (
     <div>
       <div className="w-full xs:hidden sm:hidden md:hidden lg:block xl:block xxl:block">
-        <div className="flex w-full grid grid-cols-10">
+        <div
+          className="flex w-full grid grid-cols-10"
+          style={{ height: "50vh" }}
+        >
           <div
             className="col-span-5 flex justify-center flex-col p-4 h-full"
             style={{ marginLeft: "10%", marginRight: "5%" }}
@@ -64,12 +68,15 @@ const Hero = ({
               />
             </h1>
             <Para text={description} black />
+            <div className="mt-4 flex ">
+              {getstarted && <But text={"Get Started"} bgblack />}
+            </div>
           </div>
           <div className="col-span-5 flex justify-center items-center h-full">
             <Lottie
               animationData={animationdata}
               loop={true}
-              style={{ width: "80%" }}
+              style={{ width: "80%", objectFit: "contain", height: "45vh" }}
             />
           </div>
         </div>
@@ -81,12 +88,12 @@ const Hero = ({
             <Lottie
               animationData={animationdata}
               loop={true}
-              style={{ width: "80%" }}
+              style={{ width: "80%", objectFit: "contain" }}
             />
           </div>
 
           <div className=" flex justify-center flex-col p-2 h-full bg-white ">
-            <div className=" bg-white shadow-lg p-2 rounded-lg">
+            <div className=" bg-white shadow-lg p-4 rounded-lg">
               <h1 className="text-primary  tracking-wide xs:text-xl sm:text-xl md:text-xl text-center font-righteous ">
                 {title}
               </h1>
@@ -94,10 +101,13 @@ const Hero = ({
                 <Heading text={tagline} secondary />
               </div>
 
-              <h1 className="text-black xs:text-xl sm:text-xl md:text-xl font-righteous mb-2 mt-4">
+              <h1 className="text-black xs:text-xl sm:text-xl md:text-xl font-righteous text-center mb-2 mt-4">
                 {subtitle}
               </h1>
               <Para text={description} black />
+              <div className="mt-4 flex justify-center">
+                {getstarted && <But text={"Get Started"} bgblack />}
+              </div>
             </div>
           </div>
         </div>

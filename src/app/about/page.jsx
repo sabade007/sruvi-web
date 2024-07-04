@@ -1,7 +1,7 @@
 import React from "react";
 import Headerbottom from "../components/general/Headerbottom";
 import Hero from "../components/general/Hero";
-import serviceshero from "../assets/lottie/serviceshero.json";
+import aboutushero from "../assets/lottie/aboutushero.json";
 import Header from "../components/general/Header";
 
 const page = () => {
@@ -16,7 +16,7 @@ const page = () => {
         description={
           "At Sruvi Inc., we don't just write code; we architect solutions that transform businesses. Our passion lies in turning complex challenges into elegant software—ones that empower organizations, delight users, and shape the digital landscape."
         }
-        animationdata={serviceshero}
+        animationdata={aboutushero}
         typestringHead={"CodeCrafters: "}
         typestring1={"Innovate."}
         typestring2={"Integrate."}

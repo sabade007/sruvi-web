@@ -28,24 +28,6 @@ const page = () => {
       />
 
       <Headerbottom />
-
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
-      <Header />
     </div>
   );
 };
